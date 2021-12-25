@@ -28,7 +28,7 @@ public class Pit {
     }
 
     public boolean isCala() {
-        return (this.id == Board.LAST_IDX/2 && this.id == Board.LAST_IDX);
+        return (this.id == Board.LAST_IDX/2 || this.id == Board.LAST_IDX);
     }
 
 }

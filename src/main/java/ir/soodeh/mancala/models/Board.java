@@ -14,7 +14,7 @@ public class Board {
 
     public Board() {
         //initialize the board
-        pits = IntStream.range(FIRST_IDX, LAST_IDX).boxed().map(i-> new Pit(i, (i == Board.LAST_IDX/2 || i == Board.LAST_IDX) ? 0 : 6 )).collect( Collectors.toList());
+        pits = IntStream.range(FIRST_IDX, LAST_IDX+1).boxed().map(i-> new Pit(i, (i == Board.LAST_IDX/2 || i == Board.LAST_IDX) ? 0 : 6 )).collect( Collectors.toList());
     }
 
     public Pit getPit(int idx){

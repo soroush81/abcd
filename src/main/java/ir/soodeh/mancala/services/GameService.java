@@ -21,10 +21,20 @@ public class GameService {
         this.gameRepository = gameRepository;
     }
 
+    /**
+     * this method for creating a game
+     * @return
+     */
     public Game createGame(){
         return gameRepository.save ( new Game() );
     }
 
+    /**
+     * this method use for playing game
+     * @param gameId
+     * @param pitIdx
+     * @return
+     */
     public Game play(int gameId, int pitIdx){
         Game game = gameRepository.findById ( gameId ).orElseThrow (() -> new GameNotFoundException(gameId));
         Pit selectedPit = game.getBoard ().getPit(pitIdx);
@@ -34,12 +44,21 @@ public class GameService {
         return game;
     }
 
-    public void reset(Game game){
+    /**
+     * this method is for resetting game
+     * @param game
+     */
+    public void resetGame(Game game){
         game.getBoard ( ).getPits ().stream ().filter(pit -> !pit.isCala()).forEach ( pit -> pit.setStoneCount ( 0 ) );
     }
 
+    /**
+     * shift the stones of the selected pit in anticlockwise direction one per pit until last one
+     * @param game
+     * @param selectedPit
+     */
     private void shiftStones(Game game,Pit selectedPit) {
-        //move stones in a loop
+        //shift stones in a loop
         int selectedPitStoneCount = selectedPit.getStoneCount ();
         int pitIdx = selectedPit.getId ();
         selectedPit.setStoneCount ( 0 );
@@ -58,15 +77,17 @@ public class GameService {
     }
 
 
-
+    /**
+     *  if game is over decide winner else change current player
+     * @param game
+     */
     private void decideGameStatus(Game game) {
         checkGameIsOver(game);
     }
 
-    private boolean checkGameIsOver(Game game) {
-        int player1StoneCount = game.getBoard ().getPits ().stream ().filter(pit -> pit.getOwner () == Player.PLAYER_1 && pit.getStoneCount () > 0).mapToInt(i -> i.getStoneCount ()).sum();
-        int player2StoneCount = game.getBoard ().getPits ().stream ().filter(pit -> pit.getOwner () == Player.PLAYER_1 && pit.getStoneCount () > 0).mapToInt(i -> i.getStoneCount ()).sum();
-
+    private void checkGameIsOver(Game game) {
+        int player1StoneCount = game.getBoard ().getPitsStoneCount (Player.PLAYER_1);
+        int player2StoneCount = game.getBoard ().getPitsStoneCount (Player.PLAYER_2);
 
         if (player1StoneCount == 0 || player2StoneCount == 0){
             Pit player1Cala = game.getBoard ().getPit ( Player.PLAYER_1.getCalaIdx () );
@@ -74,12 +95,9 @@ public class GameService {
             player1Cala.setStoneCount (player1Cala.getStoneCount () + player1StoneCount);
             player2Cala.setStoneCount (player2Cala.getStoneCount () + player2StoneCount);
             decideWinner(game);
-
-            return true;
         }
         else{
             changeCurrentPlayer(game);
-            return false;
         }
     }
 
@@ -99,6 +117,11 @@ public class GameService {
             game.setWinner ( Player.PLAYER_2 );
     }
 
+    /**
+     * this methods is for validation rules for move
+     * @param game
+     * @param selectedPit
+     */
     private void validateSelectedMove(Game game, Pit selectedPit) {
         int pitIdx = selectedPit.getId ();
         if (pitIdx == 0 || pitIdx>Board.LAST_IDX)

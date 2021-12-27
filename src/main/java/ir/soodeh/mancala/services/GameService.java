@@ -5,7 +5,6 @@ import ir.soodeh.mancala.models.Game;
 import ir.soodeh.mancala.models.Pit;
 import ir.soodeh.mancala.enums.Player;
 import ir.soodeh.mancala.repositories.GameRepository;
-import ir.soodeh.mancala.exceptions.GameNotFoundException;
 import ir.soodeh.mancala.exceptions.InvalidMoveException;
 import ir.soodeh.mancala.exceptions.PitNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

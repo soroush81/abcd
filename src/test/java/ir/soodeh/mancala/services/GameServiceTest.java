@@ -11,8 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import java.util.Optional;
-
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,13 +38,11 @@ class GameServiceTest {
     @Test
     void play_basic() {
         Game mockedGame = mock(Game.class);
-        when(gameRepository.findById ( 1 )).thenReturn ( Optional.of(mockedGame) );
+        when(gameRepository.findById ( 1 )).thenReturn (mockedGame);
 
         Game game = this.gameService.play ( 1,3 );
         assertThat(game).isEqualTo(mockedGame);
     }
 
-    @Test
-    void resetGame() {
-    }
+
 }

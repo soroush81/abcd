@@ -1,11 +1,14 @@
 package ir.soodeh.mancala.models;
 
+import ir.soodeh.mancala.enums.Player;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static ir.soodeh.mancala.utils.manCalaUtils.isCala;
 
 public class Board {
     public static final int FIRST_IDX = 1;
@@ -14,7 +17,7 @@ public class Board {
 
     public Board() {
         //initialize the board
-        pits = IntStream.range(FIRST_IDX, LAST_IDX).boxed().map(i-> new Pit(i, (i == Board.LAST_IDX/2 || i == Board.LAST_IDX) ? 0 : 6 )).collect( Collectors.toList());
+        pits = IntStream.range(FIRST_IDX, LAST_IDX + 1).boxed().map(i-> new Pit(i, isCala ( i ) ? 0 : 6, isCala ( i ) )).collect( Collectors.toList());
     }
 
     public Pit getPit(int idx){
@@ -33,7 +36,7 @@ public class Board {
         return pits.stream().filter ( pit -> pit.getOwner () == player && pit.isCala()).mapToInt ( i->i.getStoneCount () ).sum ();
     }
 
-    public JSONObject getStatus(){
+    public JSONObject getGameStatus(){
         JSONObject status = new JSONObject (  );
         pits.stream ().forEach ( pit -> status.put(pit.getId (), pit.getStoneCount ()) );
         return status;

@@ -1,25 +1,23 @@
 package ir.soodeh.mancala.models;
 
+import ir.soodeh.mancala.enums.Player;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Game {
-    private static AtomicInteger currentId = new AtomicInteger(0);
+    private static AtomicInteger generatedId = new AtomicInteger(1000);
     private int id;
     private Board board;
     private Player currentPlayer = Player.PLAYER_1;
     private Player winner;
 
     public Game() {
-        this.id = currentId.getAndIncrement ();
+        this.id = generatedId.getAndIncrement ();
         this.board = new Board (  );
     }
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public Board getBoard() {

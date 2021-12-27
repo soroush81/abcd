@@ -1,14 +1,17 @@
 package ir.soodeh.mancala.models;
 
+import ir.soodeh.mancala.enums.Player;
+
 public class Pit {
 
     private int id;
     private int stoneCount;
     private boolean isCala;
 
-    public Pit(int id, int stoneCount) {
+    public Pit(int id, int stoneCount, boolean isCala) {
         this.id = id;
         this.stoneCount = stoneCount;
+        this.isCala = isCala;
     }
 
     public int getId() {
@@ -28,7 +31,7 @@ public class Pit {
     }
 
     public boolean isCala() {
-        return (this.id == Board.LAST_IDX/2 && this.id == Board.LAST_IDX);
+        return (this.id == Board.LAST_IDX/2 || this.id == Board.LAST_IDX);
     }
 
 }

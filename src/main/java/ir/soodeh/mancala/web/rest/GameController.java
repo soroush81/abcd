@@ -13,7 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/games")
+@RequestMapping("/game")
 public class GameController {
 
     private GameService gameService;
@@ -32,15 +32,12 @@ public class GameController {
         return ResponseEntity.created(uri).body(game);
     }
 
-    @PutMapping("{gameId}/pits/{pitId}")
-    public ResponseEntity<GameDto> play(@PathVariable Integer gameId, @PathVariable int pitId){
+    @PutMapping("{gameId}/pit/{pitId}")
+    public ResponseEntity<GameDto> playGame(@PathVariable Integer gameId, @PathVariable int pitId){
         Game game = gameService.play ( gameId, pitId );
 
-        //String uri = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
-        //uri = StringUtils.substringBefore(uri, "/pits");
-
-        JSONObject boardStatus = game.getBoard ().getStatus ();
-        GameDto gameDto = new GameDto ( game.getId (),  boardStatus, game.getWinner ());
+        JSONObject gameStatus = game.getBoard ().getGameStatus ();
+        GameDto gameDto = new GameDto ( game.getId (), gameStatus , game.getWinner ());
         return ResponseEntity.status ( HttpStatus.OK ).body (gameDto);
     }
 }

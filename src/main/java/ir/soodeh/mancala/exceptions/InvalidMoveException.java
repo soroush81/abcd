@@ -1,4 +1,4 @@
-package ir.soodeh.mancala.services.exceptions;
+package ir.soodeh.mancala.exceptions;
 
 public class InvalidMoveException extends RuntimeException {
 

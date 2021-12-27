@@ -1,9 +1,7 @@
 package ir.soodeh.mancala.repositories;
-
+import ir.soodeh.mancala.exceptions.GameNotFoundException;
 import ir.soodeh.mancala.models.Game;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -11,16 +9,17 @@ import java.util.Optional;
 @Repository
 public class GameRepositoryImpl implements GameRepository {
 
-    Map<Integer, Game> games =  new HashMap<>();
+    private Map<Integer, Game> games =  new HashMap<>();
 
     @Override
-    public Optional<Game> findById(int id) {
-        return Optional.of (games.get ( id ));
-    }
-
-    @Override
-    public Game save(Game game) {
+    public Game create(Game game) {
         games.put(game.getId(), game);
         return game;
     }
+
+    @Override
+    public Game findById(Integer id) {
+       return Optional.of(games.get ( id )).orElseThrow (()->new GameNotFoundException (id));
+    }
+
 }

@@ -152,7 +152,7 @@ public class GameService {
                 (game.getCurrentPlayer () == Player.PLAYER_2 && pitIdx <= Board.LAST_IDX/2))
             throw new InvalidMoveException ("The Pit does not belong to current player", pitIdx);
         if (selectedPit.getStoneCount() == 0) {
-            throw new InvalidMoveException("The Pit is empty,",pitIdx);
+            throw new InvalidMoveException("The Pit is empty",pitIdx);
         }
     }
 }

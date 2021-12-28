@@ -63,11 +63,11 @@ class GameServiceTest {
     @Test
     @DisplayName("play one round of game")
     void play_basic() {
-         Game mockedGame = new Game();
-         when(gameRepository.findById ( 1000 )).thenReturn (mockedGame);
+         Game game = new Game();
+         when(gameRepository.findById ( 1000 )).thenReturn (game);
 
-        Game game = this.gameService.play ( 1000,3 );
-        assertThat(game).isEqualTo(mockedGame);
+        Game playedGame = this.gameService.play ( 1000,3 );
+        assertThat(game).isEqualTo(playedGame);
         verify ( this.gameRepository, times(1))
                 .findById(1000);
     }
@@ -96,19 +96,13 @@ class GameServiceTest {
     @Test
     @DisplayName("if player selected empty pit")
     void play_emptyPit() {
-        Game mockedGame = new Game();
-        mockedGame.getBoard ().getPit ( 3 ).setStoneCount ( 0 );
-        when(gameRepository.create (any(Game.class))).thenReturn (mockedGame);
-        when(this.board.getPit(3))
-                .thenReturn(new Pit (3,0, false));
+        Game game = new Game();
+        game.getBoard ().getPit ( 3 ).setStoneCount ( 0 );
+        when(gameRepository.findById ( 1003 )).thenReturn (game);
 
-        assertThatThrownBy(() -> this.gameService.play ( 1000,3 ))
+        assertThatThrownBy(() -> this.gameService.play ( 1003,3 ))
                 .isInstanceOf( InvalidMoveException.class)
-                .hasMessage("The Pit is empty,3");
-//        //negative values
-//        assertThrows(InvalidMoveException.class, () -> {
-//            gameService.play (1000, 3);
-//        });
+                .hasMessage("The Pit is empty: 3");
     }
 
 }

@@ -7,6 +7,6 @@ public class InvalidMoveException extends RuntimeException {
     }
 
     public InvalidMoveException(String message, int pitIdx) {
-        super(String.format ("%s :  %d", message, pitIdx));
+        super(String.format ("%s: %d", message, pitIdx));
     }
 }

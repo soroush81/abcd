@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static ir.soodeh.mancala.utils.manCalaUtils.isCala;
+import static ir.soodeh.mancala.utils.ManCalaUtils.isCala;
 
 public class Board {
     public static final int FIRST_IDX = 1;
     public static final int LAST_IDX = 14;
-    private List<Pit> pits = new ArrayList<Pit> (  );
+    private List<Pit> pits = new ArrayList<> (  );
 
     public Board() {
         //initialize the board
@@ -29,11 +29,11 @@ public class Board {
     }
 
     public int getPitsStoneCount(Player player){
-        return pits.stream().filter ( pit -> pit.getOwner () == player && !pit.isCala()).mapToInt ( i->i.getStoneCount () ).sum ();
+        return pits.stream().filter ( pit -> pit.getOwner () == player && !pit.isCala()).mapToInt ( Pit::getStoneCount ).sum ();
     }
 
     public int getCalaStoneCount(Player player){
-        return pits.stream().filter ( pit -> pit.getOwner () == player && pit.isCala()).mapToInt ( i->i.getStoneCount () ).sum ();
+        return pits.stream().filter ( pit -> pit.getOwner () == player && pit.isCala()).mapToInt ( Pit::getStoneCount).sum ();
     }
 
     public JSONObject getGameStatus(){

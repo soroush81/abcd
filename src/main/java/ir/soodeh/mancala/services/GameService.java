@@ -37,7 +37,7 @@ public class GameService {
      * @return game object
      */
     public Game play(int gameId, int pitIdx){
-        Game game = gameRepository.findById ( gameId );
+        Game game = this.gameRepository.findById ( gameId );
         Pit selectedPit = Optional.of(game.getBoard ().getPit(pitIdx)).orElseThrow (()-> new PitNotFoundException ( pitIdx ));
         validateSelectedMove(game, selectedPit);
         shiftStones(game, selectedPit);
@@ -46,10 +46,9 @@ public class GameService {
 
     /**
      * this method is for resetting game
-     * @param gameId that want to reset
+     * @param game that want to reset
      */
-    public void resetGame(Integer gameId){
-        Game game = gameRepository.findById ( gameId );
+    public void resetGame(Game game){
         game.getBoard ( ).getPits ().stream ().filter(pit -> !pit.isCala()).forEach ( pit -> pit.setStoneCount ( 0 ) );
     }
 
@@ -91,6 +90,7 @@ public class GameService {
         if (player1StoneCount == 0 || player2StoneCount == 0){
             decideWinner(game);
             putRemainderStonesToCalas ( game, player1StoneCount, player2StoneCount );
+            resetGame(game);
         }
         //else change turn
         else{
@@ -109,6 +109,7 @@ public class GameService {
         Pit player2Cala = game.getBoard ().getPit ( Player.PLAYER_2.getCalaIdx () );
         player1Cala.setStoneCount (player1Cala.getStoneCount () + player1StoneCount);
         player2Cala.setStoneCount (player2Cala.getStoneCount () + player2StoneCount);
+
     }
 
     /**

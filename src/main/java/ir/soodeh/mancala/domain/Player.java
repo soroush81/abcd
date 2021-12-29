@@ -1,6 +1,6 @@
-package ir.soodeh.mancala.enums;
+package ir.soodeh.mancala.domain;
 
-import ir.soodeh.mancala.models.Board;
+import ir.soodeh.mancala.domain.Board;
 
 public enum Player {
     PLAYER_1( Board.LAST_IDX/2),

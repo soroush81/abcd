@@ -1,12 +1,13 @@
 package ir.soodeh.mancala.services;
 
-import ir.soodeh.mancala.models.Board;
-import ir.soodeh.mancala.models.Game;
-import ir.soodeh.mancala.models.Pit;
-import ir.soodeh.mancala.enums.Player;
+import ir.soodeh.mancala.domain.Board;
+import ir.soodeh.mancala.domain.Game;
+import ir.soodeh.mancala.domain.Pit;
+import ir.soodeh.mancala.domain.Player;
+import ir.soodeh.mancala.services.exceptions.GameNotFoundException;
 import ir.soodeh.mancala.repositories.GameRepository;
-import ir.soodeh.mancala.exceptions.InvalidMoveException;
-import ir.soodeh.mancala.exceptions.PitNotFoundException;
+import ir.soodeh.mancala.services.exceptions.InvalidMoveException;
+import ir.soodeh.mancala.services.exceptions.PitNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,10 +38,11 @@ public class GameService {
      * @return game object
      */
     public Game play(int gameId, int pitIdx){
-        Game game = this.gameRepository.findById ( gameId );
+        Game game = this.gameRepository.findById ( gameId ).orElseThrow (()->new GameNotFoundException ( gameId ));
         Pit selectedPit = Optional.of(game.getBoard ().getPit(pitIdx)).orElseThrow (()-> new PitNotFoundException ( pitIdx ));
         validateSelectedMove(game, selectedPit);
-        shiftStones(game, selectedPit);
+        Pit lastPit = shiftStones(game, selectedPit);
+        decideGameStatus(game,lastPit);
         return game;
     }
 
@@ -57,12 +59,12 @@ public class GameService {
      * @param game
      * @param selectedPit
      */
-    private void shiftStones(Game game,Pit selectedPit) {
+    private Pit shiftStones(Game game,Pit selectedPit) {
         //shift stones in a loop
         int selectedPitStoneCount = selectedPit.getStoneCount ();
         int pitIdx = selectedPit.getId ();
         selectedPit.setStoneCount (0);
-        Pit currentPit;
+        Pit currentPit = null;
         // loop to place the stone in the pits anticlockwise
         while(selectedPitStoneCount > 0){
             pitIdx++;
@@ -72,9 +74,7 @@ public class GameService {
             currentPit.setStoneCount ( currentPit.getStoneCount () + 1 );
             selectedPitStoneCount--;
         }
-
-        //check if game is over decide winner else change current player
-        decideGameStatus(game);
+       return currentPit;
     }
 
 
@@ -82,7 +82,7 @@ public class GameService {
      *  if game is over decide winner else change current player
      * @param game
      */
-    private void decideGameStatus(Game game) {
+    private void decideGameStatus(Game game,Pit lastPit) {
         int player1StoneCount = game.getBoard ().getPitsStoneCount (Player.PLAYER_1);
         int player2StoneCount = game.getBoard ().getPitsStoneCount (Player.PLAYER_2);
 
@@ -94,7 +94,7 @@ public class GameService {
         }
         //else change turn
         else{
-            changeCurrentPlayer(game);
+            changeCurrentPlayer(game, lastPit);
         }
     }
 
@@ -116,7 +116,10 @@ public class GameService {
      * change turn
      * @param game
      */
-    private void changeCurrentPlayer(Game game) {
+    private void changeCurrentPlayer(Game game, Pit lastPit) {
+        if (lastPit.isCala ()) {
+            return;
+        }
         if (game.getCurrentPlayer() == Player.PLAYER_1)
             game.setCurrentPlayer( Player.PLAYER_2 );
         else
@@ -132,6 +135,8 @@ public class GameService {
         int player2CalaStoneCount = game.getBoard ().getCalaStoneCount ( Player.PLAYER_2 );
         if (player1CalaStoneCount > player2CalaStoneCount)
             game.setWinner ( Player.PLAYER_1 );
+        else if (player1CalaStoneCount == player2CalaStoneCount)
+            game.setWinner ( null );
         else
             game.setWinner ( Player.PLAYER_2 );
     }

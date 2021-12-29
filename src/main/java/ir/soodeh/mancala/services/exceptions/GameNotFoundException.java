@@ -1,4 +1,4 @@
-package ir.soodeh.mancala.exceptions;
+package ir.soodeh.mancala.services.exceptions;
 
 public class GameNotFoundException extends RuntimeException{
     public GameNotFoundException(int gameId) {

@@ -1,6 +1,6 @@
 package ir.soodeh.mancala.utils;
 
-import ir.soodeh.mancala.models.Board;
+import ir.soodeh.mancala.domain.Board;
 
 public class ManCalaUtils {
     private ManCalaUtils(){

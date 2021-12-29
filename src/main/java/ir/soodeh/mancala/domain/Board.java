@@ -1,6 +1,5 @@
-package ir.soodeh.mancala.models;
+package ir.soodeh.mancala.domain;
 
-import ir.soodeh.mancala.enums.Player;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package ir.soodeh.mancala.services.dtos;
 
-import ir.soodeh.mancala.enums.Player;
+import ir.soodeh.mancala.domain.Player;
 import org.json.simple.JSONObject;
 
 public class GameDto {

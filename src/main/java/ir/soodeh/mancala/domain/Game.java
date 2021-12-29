@@ -1,6 +1,4 @@
-package ir.soodeh.mancala.models;
-
-import ir.soodeh.mancala.enums.Player;
+package ir.soodeh.mancala.domain;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

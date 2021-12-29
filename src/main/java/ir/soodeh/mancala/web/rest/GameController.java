@@ -1,6 +1,6 @@
 package ir.soodeh.mancala.web.rest;
 
-import ir.soodeh.mancala.models.Game;
+import ir.soodeh.mancala.domain.Game;
 import ir.soodeh.mancala.services.GameService;
 import ir.soodeh.mancala.services.dtos.GameDto;
 import org.json.simple.JSONObject;

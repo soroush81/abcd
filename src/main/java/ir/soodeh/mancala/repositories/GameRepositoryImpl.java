@@ -1,6 +1,5 @@
 package ir.soodeh.mancala.repositories;
-import ir.soodeh.mancala.exceptions.GameNotFoundException;
-import ir.soodeh.mancala.models.Game;
+import ir.soodeh.mancala.domain.Game;
 import org.springframework.stereotype.Repository;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,8 +17,8 @@ public class GameRepositoryImpl implements GameRepository {
     }
 
     @Override
-    public Game findById(Integer id) {
-       return Optional.of(games.get ( id )).orElseThrow (()->new GameNotFoundException (id));
+    public Optional<Game> findById(Integer id) {
+       return Optional.of(games.get ( id ));
     }
 
 }

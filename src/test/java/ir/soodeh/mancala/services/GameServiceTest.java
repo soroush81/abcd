@@ -18,6 +18,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -102,7 +103,7 @@ class GameServiceTest {
                 + game.getBoard ().getCalaStoneCount ( Player.PLAYER_1 )).isEqualTo ( 37 );
         assertThat ( game.getBoard ().getPitsStoneCount ( Player.PLAYER_2 )
                 + game.getBoard ().getCalaStoneCount ( Player.PLAYER_2 )).isEqualTo ( 35 );
-        Assert.assertNull (game.getWinner ());
+        assertNull (game.getWinner ());
     }
 
      @Test
@@ -129,7 +130,6 @@ class GameServiceTest {
     @Test
     @DisplayName("check reset game")
     void resetGame() {
-        //when(gameRepository.findById ( 1000 )).thenReturn (Optional.of(game));
         gameService.resetGame ( game );
         assertThat (game.getBoard ( ).getPitsStoneCount ( Player.PLAYER_1 )).isEqualTo ( 0 );
         assertThat (game.getBoard ( ).getPitsStoneCount ( Player.PLAYER_2 )).isEqualTo ( 0 );

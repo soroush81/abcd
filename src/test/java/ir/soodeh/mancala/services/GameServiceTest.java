@@ -1,6 +1,5 @@
 package ir.soodeh.mancala.services;
 
-import ir.soodeh.mancala.domain.Pit;
 import ir.soodeh.mancala.services.exceptions.InvalidMoveException;
 import ir.soodeh.mancala.domain.Board;
 import ir.soodeh.mancala.domain.Game;
@@ -11,25 +10,27 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.annotation.DirtiesContext;
+
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = {GameService.class})
+@ExtendWith(MockitoExtension.class)
+@DirtiesContext(classMode= AFTER_EACH_TEST_METHOD)
 class GameServiceTest {
 
-    @Autowired
+    @InjectMocks
     private GameService gameService;
 
-    @MockBean
+    @Mock
     private GameRepository gameRepository;
 
     private Game game;
@@ -38,9 +39,9 @@ class GameServiceTest {
     @BeforeEach
     public void setup(){
         game = new Game();
-        this.game = Mockito.spy(game);
+//        this.game = Mockito.spy(game);
         board = new Board();
-        this.board = Mockito.spy(game.getBoard ());
+//        this.board = Mockito.spy(game.getBoard ());
     }
 
     @Test
@@ -76,8 +77,8 @@ class GameServiceTest {
 
         game.setCurrentPlayer ( Player.PLAYER_2 );
 
-        when(this.gameRepository.findById ( 1002 )).thenReturn ( Optional.of(game));
-        game = this.gameService.play ( 1002,13 );
+        when(this.gameRepository.findById ( 1000 )).thenReturn ( Optional.of(game));
+        game = this.gameService.play ( 1000,13 );
         Assert.assertEquals ( 31,game.getBoard ().getPitsStoneCount (Player.PLAYER_1 ) + game.getBoard ().getCalaStoneCount ( Player.PLAYER_1 ));
         Assert.assertEquals ( 41,game.getBoard ().getPitsStoneCount ( Player.PLAYER_2 ) + game.getBoard ().getCalaStoneCount ( Player.PLAYER_2 ));
         Assert.assertEquals (Player.PLAYER_2, game.getWinner ());
@@ -95,8 +96,8 @@ class GameServiceTest {
 
         game.setCurrentPlayer ( Player.PLAYER_2 );
 
-        when(this.gameRepository.findById ( 1002 )).thenReturn ( Optional.of(game));
-        game = this.gameService.play ( 1002,13 );
+        when(this.gameRepository.findById ( 1000 )).thenReturn ( Optional.of(game));
+        game = this.gameService.play ( 1000,13 );
         assertThat ( game.getBoard ().getPitsStoneCount (Player.PLAYER_1 )
                 + game.getBoard ().getCalaStoneCount ( Player.PLAYER_1 )).isEqualTo ( 37 );
         assertThat ( game.getBoard ().getPitsStoneCount ( Player.PLAYER_2 )
@@ -118,9 +119,9 @@ class GameServiceTest {
     @Test
     @DisplayName("if last pit is cala")
     void play_lastPitIsCala() {
-        when(this.board.getPit ( 1 )).thenReturn ( new Pit(1,6,false) );
-        when(this.gameRepository.findById ( 1000 )).thenReturn ( Optional.of(game));
-        this.gameService.play(1000,1);
+        game.getBoard().getPit(1).setStoneCount(6);
+        when(this.gameRepository.findById ( game.getId() )).thenReturn ( Optional.of(game));
+        this.gameService.play(game.getId(),1);
         assertThat(this.game.getCurrentPlayer())
                 .isEqualTo(Player.PLAYER_1);
     }
@@ -128,7 +129,7 @@ class GameServiceTest {
     @Test
     @DisplayName("check reset game")
     void resetGame() {
-        when(gameRepository.findById ( 1000 )).thenReturn (Optional.of(game));
+        //when(gameRepository.findById ( 1000 )).thenReturn (Optional.of(game));
         gameService.resetGame ( game );
         assertThat (game.getBoard ( ).getPitsStoneCount ( Player.PLAYER_1 )).isEqualTo ( 0 );
         assertThat (game.getBoard ( ).getPitsStoneCount ( Player.PLAYER_2 )).isEqualTo ( 0 );

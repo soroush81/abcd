@@ -11,6 +11,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -19,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@DirtiesContext(classMode= DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class GameControllerTest {
 
     @InjectMocks
@@ -27,16 +31,16 @@ class GameControllerTest {
     @Mock
     GameService gameService;
 
-    @Mock
     Game game;
 
     @BeforeEach
     void setUp() {
         this.game = new Game();
-        this.game = Mockito.spy(game);
+//        this.game = Mockito.spy(game);
     }
 
     @Test
+    @DirtiesContext(methodMode= DirtiesContext.MethodMode.AFTER_METHOD)
     void createGame() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
@@ -49,6 +53,7 @@ class GameControllerTest {
     }
 
     @Test
+    @DirtiesContext(methodMode= DirtiesContext.MethodMode.AFTER_METHOD)
     void playGame() {
 
         when(this.gameService.play(1000,3)).thenReturn(game);

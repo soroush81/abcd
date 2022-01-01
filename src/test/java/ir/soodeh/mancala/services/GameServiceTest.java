@@ -36,7 +36,7 @@ class GameServiceTest {
     private Board board;
 
     @BeforeEach
-    public void init(){
+    public void setup(){
         game = new Game();
         this.game = Mockito.spy(game);
         board = new Board();

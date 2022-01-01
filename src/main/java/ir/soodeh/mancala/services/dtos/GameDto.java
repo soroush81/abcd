@@ -6,12 +6,14 @@ import org.json.simple.JSONObject;
 public class GameDto {
     private int id;
     private JSONObject status;
+    private Player currentPlayer;
     private Player winner;
 
-    public GameDto(int id, JSONObject status, Player winner) {
+    public GameDto(int id, JSONObject status, Player currentPlayer, Player winner) {
         this.id = id;
         this.status = status;
         this.winner = winner;
+        this.currentPlayer=currentPlayer;
     }
 
     public int getId() {
@@ -24,5 +26,9 @@ public class GameDto {
 
     public Player getWinner() {
         return winner;
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
     }
 }

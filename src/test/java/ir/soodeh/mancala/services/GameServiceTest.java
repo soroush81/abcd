@@ -112,7 +112,7 @@ class GameServiceTest {
 
         assertThatThrownBy(() -> this.gameService.play ( 1000,3 ))
                 .isInstanceOf( InvalidMoveException.class)
-                .hasMessage(String.format("The Pit is empty: %d",3));
+                .hasMessage(String.format("invalid move: The Pit is empty: %d",3));
     }
 
     @Test
@@ -148,10 +148,10 @@ class GameServiceTest {
         when(this.gameRepository.findById ( 1000 )).thenReturn ( Optional.of(game));
         assertThatThrownBy(() -> this.gameService.play(1000,-1))
                 .isInstanceOf( PitNotFoundException.class)
-                .hasMessage(String.format ( "Selected Pit id Invalid %d",-1));
+                .hasMessage(String.format ( "Invalid Pit: Could not find selected pit %d",-1));
         assertThatThrownBy(() -> this.gameService.play(1000, 15))
                 .isInstanceOf(PitNotFoundException.class)
-                .hasMessage(String.format ( "Selected Pit id Invalid %d",15));
+                .hasMessage(String.format ( "Invalid Pit: Could not find selected pit %d",15));
     }
 
     @Test
@@ -160,7 +160,7 @@ class GameServiceTest {
         when(this.gameRepository.findById ( 1000 )).thenReturn ( Optional.of(game));
         assertThatThrownBy(() -> this.gameService.play(1000,13))
                 .isInstanceOf(InvalidMoveException.class)
-                .hasMessage(String.format("The Pit does not belong to current player: %d",13));
+                .hasMessage(String.format("invalid move: The Pit does not belong to current player: %d",13));
     }
 
     @Test
@@ -170,7 +170,7 @@ class GameServiceTest {
 
         assertThatThrownBy(() -> this.gameService.play(1000,7))
                 .isInstanceOf(InvalidMoveException.class)
-                .hasMessage("The kalaha has been selected");
+                .hasMessage("invalid move: The kalaha has been selected");
     }
 
 

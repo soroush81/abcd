@@ -17,7 +17,7 @@ public class GameRepositoryImpl implements GameRepository {
 
     @Override
     public Optional<Game> findById(Integer id) {
-       return Optional.of(games.get ( id ));
+       return Optional.ofNullable(games.get ( id ));
     }
 
 }

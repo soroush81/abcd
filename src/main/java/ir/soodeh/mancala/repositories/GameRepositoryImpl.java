@@ -10,7 +10,7 @@ public class GameRepositoryImpl implements GameRepository {
     private ConcurrentHashMap<Integer, Game> games =  new ConcurrentHashMap<> ();
 
     @Override
-    public Game create(Game game) {
+    public Game save(Game game) {
         games.put(game.getId(), game);
         return game;
     }

@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface GameRepository {
     public Optional<Game> findById(Integer id);
-    public Game create(Game game);
+    public Game save(Game game);
 }

@@ -80,8 +80,8 @@ public class GameService {
      * @param game
      */
     private void decideGameStatus(Game game,Pit lastPit) {
-        int player1StoneCount = game.getBoard ().getPitsStoneCount (Player.PLAYER_1);
-        int player2StoneCount = game.getBoard ().getPitsStoneCount (Player.PLAYER_2);
+        int player1StoneCount = game.getBoard ().getStoneCount (Player.PLAYER_1, false);
+        int player2StoneCount = game.getBoard ().getStoneCount (Player.PLAYER_2, false);
 
         //if game is over decide winner and finish the game
         if (player1StoneCount == 0 || player2StoneCount == 0){
@@ -128,8 +128,8 @@ public class GameService {
      * @param game
      */
     private void decideWinner(Game game) {
-        int player1CalaStoneCount = game.getBoard ().getCalaStoneCount ( Player.PLAYER_1 );
-        int player2CalaStoneCount = game.getBoard ().getCalaStoneCount ( Player.PLAYER_2 );
+        int player1CalaStoneCount = game.getBoard ().getStoneCount ( Player.PLAYER_1, true );
+        int player2CalaStoneCount = game.getBoard ().getStoneCount ( Player.PLAYER_2, true );
         if (player1CalaStoneCount > player2CalaStoneCount)
             game.setWinner ( Player.PLAYER_1 );
         else if (player1CalaStoneCount == player2CalaStoneCount)

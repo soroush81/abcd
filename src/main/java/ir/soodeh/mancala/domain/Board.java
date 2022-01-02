@@ -25,13 +25,13 @@ public class Board {
         return pits;
     }
 
-    public int getPitsStoneCount(Player player){
-        return pits.stream().filter ( pit -> pit.getOwner () == player && !pit.isCala()).mapToInt ( Pit::getStoneCount ).sum ();
+    public int getStoneCount(Player player, boolean isCala){
+        return pits.stream().filter ( pit -> pit.getOwner () == player && pit.isCala()==isCala).mapToInt ( Pit::getStoneCount ).sum ();
     }
-
-    public int getCalaStoneCount(Player player){
-        return pits.stream().filter ( pit -> pit.getOwner () == player && pit.isCala()).mapToInt ( Pit::getStoneCount).sum ();
-    }
+//
+//    public int getStoneCount(Player player){
+//        return pits.stream().filter ( pit -> pit.getOwner () == player && pit.isCala()).mapToInt ( Pit::getStoneCount).sum ();
+//    }
 
     public JSONObject getGameStatus(){
         JSONObject status = new JSONObject (  );

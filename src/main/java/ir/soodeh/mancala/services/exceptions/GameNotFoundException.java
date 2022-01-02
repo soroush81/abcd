@@ -1,7 +1,10 @@
 package ir.soodeh.mancala.services.exceptions;
 
-public class GameNotFoundException extends RuntimeException{
+import org.zalando.problem.AbstractThrowableProblem;
+import org.zalando.problem.Status;
+
+public class GameNotFoundException extends AbstractThrowableProblem {
     public GameNotFoundException(Integer gameId) {
-        super(String.format ("Could not find game %d", gameId));
+        super(null,"Invalid pit", Status.NOT_FOUND, String.format ("Could not find game %d", gameId));
     }
 }

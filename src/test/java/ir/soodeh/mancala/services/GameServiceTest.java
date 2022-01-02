@@ -78,8 +78,8 @@ class GameServiceTest {
 
         when(this.gameRepository.findById ( 1000 )).thenReturn ( Optional.of(game));
         game = this.gameService.play ( 1000,13 );
-        Assert.assertEquals ( 31,game.getBoard ().getPitsStoneCount (Player.PLAYER_1 ) + game.getBoard ().getCalaStoneCount ( Player.PLAYER_1 ));
-        Assert.assertEquals ( 41,game.getBoard ().getPitsStoneCount ( Player.PLAYER_2 ) + game.getBoard ().getCalaStoneCount ( Player.PLAYER_2 ));
+        Assert.assertEquals ( 31,game.getBoard ().getStoneCount (Player.PLAYER_1, false ) + game.getBoard ().getStoneCount ( Player.PLAYER_1, true ));
+        Assert.assertEquals ( 41,game.getBoard ().getStoneCount ( Player.PLAYER_2, false ) + game.getBoard ().getStoneCount ( Player.PLAYER_2, true ));
         Assert.assertEquals (Player.PLAYER_2, game.getWinner ());
     }
 
@@ -97,10 +97,10 @@ class GameServiceTest {
 
         when(this.gameRepository.findById ( 1000 )).thenReturn ( Optional.of(game));
         game = this.gameService.play ( 1000,13 );
-        assertThat ( game.getBoard ().getPitsStoneCount (Player.PLAYER_1 )
-                + game.getBoard ().getCalaStoneCount ( Player.PLAYER_1 )).isEqualTo ( 37 );
-        assertThat ( game.getBoard ().getPitsStoneCount ( Player.PLAYER_2 )
-                + game.getBoard ().getCalaStoneCount ( Player.PLAYER_2 )).isEqualTo ( 35 );
+        assertThat ( game.getBoard ().getStoneCount (Player.PLAYER_1, false )
+                + game.getBoard ().getStoneCount ( Player.PLAYER_1, true )).isEqualTo ( 37 );
+        assertThat ( game.getBoard ().getStoneCount ( Player.PLAYER_2, false )
+                + game.getBoard ().getStoneCount ( Player.PLAYER_2, true )).isEqualTo ( 35 );
         assertNull (game.getWinner ());
     }
 
@@ -129,8 +129,8 @@ class GameServiceTest {
     @DisplayName("check reset game")
     void resetGame() {
         gameService.resetGame ( game );
-        assertThat (game.getBoard ( ).getPitsStoneCount ( Player.PLAYER_1 )).isEqualTo ( 0 );
-        assertThat (game.getBoard ( ).getPitsStoneCount ( Player.PLAYER_2 )).isEqualTo ( 0 );
+        assertThat (game.getBoard ( ).getStoneCount ( Player.PLAYER_1, false )).isEqualTo ( 0 );
+        assertThat (game.getBoard ( ).getStoneCount ( Player.PLAYER_2, false )).isEqualTo ( 0 );
     }
 
     @Test

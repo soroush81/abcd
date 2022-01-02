@@ -1,62 +1,72 @@
 package ir.soodeh.mancala.web.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ir.soodeh.mancala.domain.Game;
+import ir.soodeh.mancala.domain.Player;
 import ir.soodeh.mancala.services.GameService;
-import org.junit.jupiter.api.BeforeEach;
+import ir.soodeh.mancala.services.dtos.GameDto;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
-@DirtiesContext(classMode= DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@WebMvcTest(GameController.class)
 class GameControllerTest {
 
-    @InjectMocks
-    GameController gameController;
+    @Autowired
+    private MockMvc mvc;
 
-    @Mock
-    GameService gameService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    Game game;
+    @MockBean
+    private GameService gameService;
 
-    @BeforeEach
-    void setUp() {
-        this.game = new Game();
-//        this.game = Mockito.spy(game);
+    @Test
+    void createGame() throws Exception {
+        Game createdGame = new Game();
+        when(this.gameService.createGame()).thenReturn(createdGame);
+
+        MvcResult mvcResult = mvc.perform(post("/game")
+                .accept( MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+
+        String json = mvcResult.getResponse().getContentAsString();
+        GameDto newGameResponse = objectMapper.readValue(json, GameDto.class);
+        assertThat(newGameResponse.getId())
+                .isEqualTo(createdGame.getId());
+
+        verify(gameService, times(1)).createGame();
+
     }
 
     @Test
-    @DirtiesContext(methodMode= DirtiesContext.MethodMode.AFTER_METHOD)
-    void createGame() {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+    void playGame() throws Exception {
 
-        when(this.gameService.createGame()).thenReturn(game);
-        ResponseEntity<Game> responseEntity = gameController.createGame();
+        Game game = new Game();
+        when(this.gameService.play(1000, 3))
+                .thenReturn(game);
 
-        assertThat(responseEntity.getStatusCodeValue()).isEqualTo(201);
-        assertThat(responseEntity.getHeaders().getLocation().getPath()).isEqualTo("/1000");
-    }
+       mvc.perform(put("/game/1000/pit/3")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect( MockMvcResultMatchers.jsonPath("$.status.1").value(6))
+                .andExpect( MockMvcResultMatchers.jsonPath("$.currentPlayer").value( Player.PLAYER_1.toString () ))
+                .andReturn();
 
-    @Test
-    @DirtiesContext(methodMode= DirtiesContext.MethodMode.AFTER_METHOD)
-    void playGame() {
+        verify(gameService, times(1)).play(1000, 3);
 
-        when(this.gameService.play(1000,3)).thenReturn(game);
-        ResponseEntity<Game> responseEntity = gameController.playGame(1000,3);
     }
 }

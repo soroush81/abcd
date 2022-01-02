@@ -11,8 +11,6 @@ import ir.soodeh.mancala.services.exceptions.PitNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class GameService {
 
@@ -37,11 +35,10 @@ public class GameService {
      * @param pitIdx
      * @return game object
      */
-    public Game play(int gameId, int pitIdx){
+    public Game play(Integer gameId, int pitIdx){
         Game game = this.gameRepository.findById ( gameId ).orElseThrow (()->new GameNotFoundException ( gameId ));
-        Pit selectedPit = Optional.of(game.getBoard ().getPit(pitIdx)).orElseThrow (()-> new PitNotFoundException ( pitIdx ));
-        validateSelectedMove(game, selectedPit);
-        Pit lastPit = shiftStones(game, selectedPit);
+        validateSelectedMove(game, pitIdx);
+        Pit lastPit = shiftStones(game, pitIdx);
         decideGameStatus(game,lastPit);
         return game;
     }
@@ -57,12 +54,12 @@ public class GameService {
     /**
      * shift the stones of the selected pit in anticlockwise direction one per pit until last one
      * @param game
-     * @param selectedPit
+     * @param pitIdx
      */
-    private Pit shiftStones(Game game,Pit selectedPit) {
+    private Pit shiftStones(Game game,int pitIdx) {
         //shift stones in a loop
+        Pit selectedPit = game.getBoard ().getPit(pitIdx);
         int selectedPitStoneCount = selectedPit.getStoneCount ();
-        int pitIdx = selectedPit.getId ();
         selectedPit.setStoneCount (0);
         Pit currentPit = null;
         // loop to place the stone in the pits anticlockwise
@@ -144,18 +141,18 @@ public class GameService {
     /**
      * this methods is for validation rules for move
      * @param game
-     * @param selectedPit
+     * @param pitIdx
      */
-    private void validateSelectedMove(Game game, Pit selectedPit) {
-        int pitIdx = selectedPit.getId ();
-
-        if (pitIdx == 0 || pitIdx>Board.LAST_IDX)
+    private void validateSelectedMove(Game game, int pitIdx) {
+        if (pitIdx < 1 || pitIdx > Board.LAST_IDX)
             throw new PitNotFoundException ( pitIdx );
         if (pitIdx == Board.LAST_IDX/2 || pitIdx == Board.LAST_IDX)
-            throw new InvalidMoveException ( "Cala has been selected" );
+            throw new InvalidMoveException ( "The kalaha has been selected" );
         if ((game.getCurrentPlayer () == Player.PLAYER_1 && pitIdx > Board.LAST_IDX/2) ||
                 (game.getCurrentPlayer () == Player.PLAYER_2 && pitIdx <= Board.LAST_IDX/2))
             throw new InvalidMoveException ("The Pit does not belong to current player", pitIdx);
+
+        Pit selectedPit = game.getBoard ().getPit ( pitIdx );
         if (selectedPit.getStoneCount() == 0) {
             throw new InvalidMoveException("The Pit is empty",pitIdx);
         }

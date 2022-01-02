@@ -1,10 +1,13 @@
 package ir.soodeh.mancala.services;
 
+import ir.soodeh.mancala.domain.Pit;
+import ir.soodeh.mancala.services.exceptions.GameNotFoundException;
 import ir.soodeh.mancala.services.exceptions.InvalidMoveException;
 import ir.soodeh.mancala.domain.Board;
 import ir.soodeh.mancala.domain.Game;
 import ir.soodeh.mancala.domain.Player;
 import ir.soodeh.mancala.repositories.GameRepository;
+import ir.soodeh.mancala.services.exceptions.PitNotFoundException;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,31 +28,27 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
 @ExtendWith(MockitoExtension.class)
-@DirtiesContext(classMode= AFTER_EACH_TEST_METHOD)
+//@DirtiesContext
 class GameServiceTest {
-
-    @InjectMocks
-    private GameService gameService;
 
     @Mock
     private GameRepository gameRepository;
 
+    @InjectMocks
+    private GameService gameService;
+
     private Game game;
-    private Board board;
 
     @BeforeEach
     public void setup(){
         game = new Game();
-//        this.game = Mockito.spy(game);
-        board = new Board();
-//        this.board = Mockito.spy(game.getBoard ());
     }
 
     @Test
-    @DisplayName("create game")
+    @DisplayName("create a new game")
     void createGame() {
-        when(gameRepository.create (any(Game.class))).thenReturn (game);
-        Game createdGame = gameService.createGame ();
+        when(this.gameRepository.create (any(Game.class))).thenReturn (game);
+        Game createdGame = this.gameService.createGame ();
         Assert.assertNotNull (createdGame);
         Assert.assertEquals (game, createdGame );
     }
@@ -57,8 +56,7 @@ class GameServiceTest {
     @Test
     @DisplayName("play one round of game")
     void play_basic() {
-         when(gameRepository.findById ( 1000 )).thenReturn (Optional.of(game));
-
+        when(gameRepository.findById ( 1000 )).thenReturn (Optional.of(game));
         Game playedGame = this.gameService.play ( 1000,3 );
         assertThat(game).isEqualTo(playedGame);
         verify ( this.gameRepository, times(1))
@@ -72,7 +70,7 @@ class GameServiceTest {
 
         game.getBoard ().getPit ( Player.PLAYER_1.getCalaIdx () ).setStoneCount ( 23 );
         game.getBoard ().getPit ( Player.PLAYER_2.getCalaIdx () ).setStoneCount ( 40 );
-        game.getBoard ().getPit(13).setStoneCount ( 2 );
+        game.getBoard ().getPit (13 ).setStoneCount ( 2 );
         game.getBoard ().getPit ( 3 ).setStoneCount ( 5 );
         game.getBoard ().getPit ( 6 ).setStoneCount ( 2 );
 
@@ -118,11 +116,11 @@ class GameServiceTest {
     }
 
     @Test
-    @DisplayName("if last pit is cala")
+    @DisplayName("if last pit is kalaha")
     void play_lastPitIsCala() {
         game.getBoard().getPit(1).setStoneCount(6);
-        when(this.gameRepository.findById ( game.getId() )).thenReturn ( Optional.of(game));
-        this.gameService.play(game.getId(),1);
+        when(this.gameRepository.findById ( 1000 )).thenReturn ( Optional.of(game));
+        this.gameService.play(1000,1);
         assertThat(this.game.getCurrentPlayer())
                 .isEqualTo(Player.PLAYER_1);
     }
@@ -134,4 +132,46 @@ class GameServiceTest {
         assertThat (game.getBoard ( ).getPitsStoneCount ( Player.PLAYER_1 )).isEqualTo ( 0 );
         assertThat (game.getBoard ( ).getPitsStoneCount ( Player.PLAYER_2 )).isEqualTo ( 0 );
     }
+
+    @Test
+    @DisplayName("When the game id is invalid")
+    void play_gameNotFound() {
+        when(this.gameRepository.findById(1000))
+                .thenReturn(Optional.ofNullable(null));
+        assertThatThrownBy( () -> this.gameService.play(1000, 2))
+                .isInstanceOf(GameNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("When the pit id is not in range")
+    void play_pitNotFound() {
+        when(this.gameRepository.findById ( 1000 )).thenReturn ( Optional.of(game));
+        assertThatThrownBy(() -> this.gameService.play(1000,-1))
+                .isInstanceOf( PitNotFoundException.class)
+                .hasMessage(String.format ( "Selected Pit id Invalid %d",-1));
+        assertThatThrownBy(() -> this.gameService.play(1000, 15))
+                .isInstanceOf(PitNotFoundException.class)
+                .hasMessage(String.format ( "Selected Pit id Invalid %d",15));
+    }
+
+    @Test
+    @DisplayName("When the pit does not belong to current player")
+    void makeMove_invalidPitForCurrentPlayer() {
+        when(this.gameRepository.findById ( 1000 )).thenReturn ( Optional.of(game));
+        assertThatThrownBy(() -> this.gameService.play(1000,13))
+                .isInstanceOf(InvalidMoveException.class)
+                .hasMessage(String.format("The Pit does not belong to current player: %d",13));
+    }
+
+    @Test
+    @DisplayName("When kalaha is selected")
+    void makeMove_kalahIsSelected() {
+        when(this.gameRepository.findById ( 1000 )).thenReturn ( Optional.of(game));
+
+        assertThatThrownBy(() -> this.gameService.play(1000,7))
+                .isInstanceOf(InvalidMoveException.class)
+                .hasMessage("The kalaha has been selected");
+    }
+
+
 }

@@ -1,7 +1,5 @@
 package ir.soodeh.mancala.domain;
 
-import ir.soodeh.mancala.domain.Board;
-
 public enum Player {
     PLAYER_1( Board.LAST_IDX/2),
     PLAYER_2(Board.LAST_IDX);

@@ -1,8 +1,6 @@
 package ir.soodeh.mancala.domain;
 
 import org.json.simple.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -12,7 +10,7 @@ import static ir.soodeh.mancala.utils.ManCalaUtils.isCala;
 public class Board {
     public static final int FIRST_IDX = 1;
     public static final int LAST_IDX = 14;
-    private List<Pit> pits = new ArrayList<> (  );
+    private List<Pit> pits;
 
     public Board() {
         //initialize the board

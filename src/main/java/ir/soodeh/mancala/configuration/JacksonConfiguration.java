@@ -8,7 +8,7 @@ import org.zalando.problem.ProblemModule;
 import org.zalando.problem.violations.ConstraintViolationProblemModule;
 
 @Configuration
-public class ProblemConfiguration {
+public class JacksonConfiguration {
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper().registerModules(

@@ -26,7 +26,7 @@ public class GameService {
      * @return created game object
      */
     public Game createGame(){
-        return gameRepository.create ( new Game() );
+        return gameRepository.save ( new Game() );
     }
 
     /**
@@ -39,6 +39,7 @@ public class GameService {
         Game game = this.gameRepository.findById ( gameId ).orElseThrow (()->new GameNotFoundException ( gameId ));
         validateSelectedMove(game, pitIdx);
         Pit lastPit = shiftStones(game, pitIdx);
+        getOppositeOnEmptyPit(game ,lastPit);
         decideGameStatus(game,lastPit);
         return game;
     }
@@ -85,13 +86,30 @@ public class GameService {
 
         //if game is over decide winner and finish the game
         if (player1StoneCount == 0 || player2StoneCount == 0){
+            putRemainderStonesTokalahas ( game, player1StoneCount, player2StoneCount );
             decideWinner(game);
-            putRemainderStonesToCalas ( game, player1StoneCount, player2StoneCount );
-            resetGame(game);
+//            resetGame(game);
         }
-        //else change turn
         else{
             changeCurrentPlayer(game, lastPit);
+        }
+    }
+
+    /**
+     * when last stone sit on current player's empty pit, all the opposite side's pit stones will be his/her
+     * @param game
+     * @param lastPit
+     */
+    private void getOppositeOnEmptyPit(Game game, Pit lastPit) {
+        final Player currentPlayer = game.getCurrentPlayer ();
+        if (lastPit.getStoneCount() == 1 && !lastPit.isCala () && lastPit.getOwner ().equals ( currentPlayer )){
+            Pit oppositePit = game.getBoard().getPit ( Board.LAST_IDX-lastPit.getId () );
+            Pit currentPlayerKalah = game.getBoard ().getPit(currentPlayer.getCalaIdx ());
+            if (oppositePit.getStoneCount () > 0) {
+                currentPlayerKalah.setStoneCount ( currentPlayerKalah.getStoneCount ( ) + oppositePit.getStoneCount ( ) + 1 );
+                oppositePit.setStoneCount ( 0 );
+                lastPit.setStoneCount ( 0 );
+            }
         }
     }
 
@@ -101,12 +119,11 @@ public class GameService {
      * @param player1StoneCount
      * @param player2StoneCount
      */
-    private void putRemainderStonesToCalas(Game game, int player1StoneCount, int player2StoneCount) {
+    private void putRemainderStonesTokalahas(Game game, int player1StoneCount, int player2StoneCount) {
         Pit player1Cala = game.getBoard ().getPit ( Player.PLAYER_1.getCalaIdx () );
         Pit player2Cala = game.getBoard ().getPit ( Player.PLAYER_2.getCalaIdx () );
         player1Cala.setStoneCount (player1Cala.getStoneCount () + player1StoneCount);
         player2Cala.setStoneCount (player2Cala.getStoneCount () + player2StoneCount);
-
     }
 
     /**

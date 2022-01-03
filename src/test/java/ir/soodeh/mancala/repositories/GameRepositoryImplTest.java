@@ -18,7 +18,7 @@ class GameRepositoryImplTest {
     @Test
     void findById() {
         Game createdGame = new Game ();
-        this.gameRepository.create ( createdGame );
+        this.gameRepository.save ( createdGame );
         Optional<Game> foundGame = gameRepository.findById ( createdGame.getId () );
         Assert.assertEquals ( createdGame, foundGame.get () );
     }

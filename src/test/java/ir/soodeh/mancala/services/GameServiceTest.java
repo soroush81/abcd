@@ -47,7 +47,7 @@ class GameServiceTest {
     @Test
     @DisplayName("create a new game")
     void createGame() {
-        when(this.gameRepository.create (any(Game.class))).thenReturn (game);
+        when(this.gameRepository.save (any(Game.class))).thenReturn (game);
         Game createdGame = this.gameService.createGame ();
         Assert.assertNotNull (createdGame);
         Assert.assertEquals (game, createdGame );
@@ -113,6 +113,22 @@ class GameServiceTest {
         assertThatThrownBy(() -> this.gameService.play ( 1000,3 ))
                 .isInstanceOf( InvalidMoveException.class)
                 .hasMessage(String.format("invalid move: The Pit is empty: %d",3));
+    }
+
+    @Test
+    @DisplayName ( "if lst pit sit on the empty pit of his/her own")
+    void play_lastPitSitOnEmpty(){
+        Game game = new Game();
+        game.getBoard ().getPit ( 6 ).setStoneCount (0);
+        game.getBoard ().getPit ( 4 ).setStoneCount (2);
+        game.getBoard ().getPit ( 8 ).setStoneCount (2);
+        game.getBoard ().getPit ( 7 ).setStoneCount ( 8 );
+        when(this.gameRepository.findById ( 1000 )).thenReturn ( Optional.of (game) );
+        Game playedGame = this.gameService.play ( 1000,4 );
+        assertThat ( playedGame.getBoard ().getPit ( 7 ).getStoneCount () ).isEqualTo ( 11 );
+        assertThat ( playedGame.getBoard ().getPit ( 6 ).getStoneCount () ).isEqualTo ( 0 );
+        assertThat ( playedGame.getBoard ().getPit ( 8 ).getStoneCount () ).isEqualTo ( 0 );
+        assertThat ( playedGame.getBoard ().getPit ( 4 ).getStoneCount () ).isEqualTo ( 0 );
     }
 
     @Test

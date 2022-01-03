@@ -1,8 +1,9 @@
 package ir.soodeh.mancala.domain;
+import static ir.soodeh.mancala.constants.KalahaConstants.*;
 
 public enum Player {
-    PLAYER_1( Board.LAST_IDX/2),
-    PLAYER_2(Board.LAST_IDX);
+    PLAYER_1( LAST_IDX/2),
+    PLAYER_2(LAST_IDX);
 
     private final int calaIdx;
 

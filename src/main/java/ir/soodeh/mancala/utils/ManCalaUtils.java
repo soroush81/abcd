@@ -1,12 +1,12 @@
 package ir.soodeh.mancala.utils;
 
-import ir.soodeh.mancala.domain.Board;
+import static ir.soodeh.mancala.constants.KalahaConstants.*;
 
 public class ManCalaUtils {
     private ManCalaUtils(){
 
     }
     public static boolean isCala(Integer i) {
-        return i == Board.LAST_IDX/2 || i == Board.LAST_IDX;
+        return i == LAST_IDX/2 || i == LAST_IDX;
     }
 }

@@ -22,10 +22,6 @@ public class Game {
         return board;
     }
 
-    public void setBoard() {
-        this.board = new Board (  );
-    }
-
     public Player getCurrentPlayer() {
         return currentPlayer;
     }

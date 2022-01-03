@@ -28,7 +28,7 @@ public class GameController {
         Game game = gameService.createGame (  );
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").
                 buildAndExpand(game.getId()).toUri();
-        JSONObject gameStatus = game.getBoard ().getGameStatus ();
+        JSONObject gameStatus = game.getBoard ().getStatus ();
         GameDto gameDto = new GameDto ( game.getId (), gameStatus , game.getCurrentPlayer(),game.getWinner ());
         return ResponseEntity.created(uri).body(gameDto);
     }
@@ -36,7 +36,7 @@ public class GameController {
     @PutMapping("{gameId}/pit/{pitId}")
     public GameDto playGame(@PathVariable Integer gameId, @PathVariable int pitId){
         Game game = gameService.play ( gameId, pitId );
-        JSONObject gameStatus = game.getBoard ().getGameStatus ();
+        JSONObject gameStatus = game.getBoard ().getStatus ();
         return new GameDto ( game.getId (), gameStatus ,game.getCurrentPlayer(), game.getWinner ());
     }
 }

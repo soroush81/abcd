@@ -84,23 +84,22 @@ class GameServiceTest {
     }
 
     @Test
-    @DisplayName("play last round of the game without winner")
-    void game_lastRoundWithoutWinner(){
+    @DisplayName("if the game is without winner")
+    void game_withdrawGame(){
         game.getBoard ().getPits ().stream ().filter(pit -> !pit.isCala()).forEach ( pit -> pit.setStoneCount ( 0 ) );
-
-        game.getBoard ().getPit ( Player.PLAYER_1.getCalaIdx () ).setStoneCount ( 35 );
-        game.getBoard ().getPit ( Player.PLAYER_2.getCalaIdx () ).setStoneCount ( 34 );
+        game.getBoard ().getPit ( Player.PLAYER_1.getCalaIdx () ).setStoneCount ( 34 );
+        game.getBoard ().getPit ( Player.PLAYER_2.getCalaIdx () ).setStoneCount ( 35 );
         game.getBoard ().getPit(13).setStoneCount ( 1 );
         game.getBoard ().getPit ( 6 ).setStoneCount ( 2 );
-
         game.setCurrentPlayer ( Player.PLAYER_2 );
 
         when(this.gameRepository.findById ( 1000 )).thenReturn ( Optional.of(game));
         game = this.gameService.play ( 1000,13 );
+
         assertThat ( game.getBoard ().getStoneCount (Player.PLAYER_1, false )
-                + game.getBoard ().getStoneCount ( Player.PLAYER_1, true )).isEqualTo ( 37 );
+                + game.getBoard ().getStoneCount ( Player.PLAYER_1, true )).isEqualTo ( 36 );
         assertThat ( game.getBoard ().getStoneCount ( Player.PLAYER_2, false )
-                + game.getBoard ().getStoneCount ( Player.PLAYER_2, true )).isEqualTo ( 35 );
+                + game.getBoard ().getStoneCount ( Player.PLAYER_2, true )).isEqualTo ( 36 );
         assertNull (game.getWinner ());
     }
 
@@ -164,10 +163,10 @@ class GameServiceTest {
         when(this.gameRepository.findById ( 1000 )).thenReturn ( Optional.of(game));
         assertThatThrownBy(() -> this.gameService.play(1000,-1))
                 .isInstanceOf( PitNotFoundException.class)
-                .hasMessage(String.format ( "Invalid Pit: Could not find selected pit %d",-1));
+                .hasMessage(String.format ( "Not Found: Could not find selected pit %d",-1));
         assertThatThrownBy(() -> this.gameService.play(1000, 15))
                 .isInstanceOf(PitNotFoundException.class)
-                .hasMessage(String.format ( "Invalid Pit: Could not find selected pit %d",15));
+                .hasMessage(String.format ( "Not Found: Could not find selected pit %d",15));
     }
 
     @Test

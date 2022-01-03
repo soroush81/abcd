@@ -1,4 +1,5 @@
 package ir.soodeh.mancala.domain;
+import static ir.soodeh.mancala.constants.KalahaConstants.*;
 
 public class Pit {
 
@@ -25,11 +26,11 @@ public class Pit {
     }
 
     public Player getOwner(){
-        return (this.id <= Board.LAST_IDX/2) ? Player.PLAYER_1 : Player.PLAYER_2;
+        return (this.id <= LAST_IDX/2) ? Player.PLAYER_1 : Player.PLAYER_2;
     }
 
     public boolean isCala() {
-        return (this.id == Board.LAST_IDX/2 || this.id == Board.LAST_IDX);
+        return (this.id == LAST_IDX/2 || this.id == LAST_IDX);
     }
 
 }

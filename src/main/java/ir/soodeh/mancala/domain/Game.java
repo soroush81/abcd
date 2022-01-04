@@ -1,20 +1,20 @@
 package ir.soodeh.mancala.domain;
 
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Game {
-    private static AtomicInteger generatedId = new AtomicInteger(1000);
-    private int id;
+    private String id;
     private Board board;
     private Player currentPlayer = Player.PLAYER_1;
     private Player winner;
 
     public Game() {
-        this.id = generatedId.getAndIncrement ();
+        this.id = UUID.randomUUID ().toString ();
         this.board = new Board (  );
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

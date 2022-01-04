@@ -34,7 +34,7 @@ public class GameController {
     }
 
     @PutMapping("{gameId}/pit/{pitId}")
-    public GameDto playGame(@PathVariable Integer gameId, @PathVariable int pitId){
+    public GameDto playGame(@PathVariable String gameId, @PathVariable int pitId){
         Game game = gameService.play ( gameId, pitId );
         JSONObject gameStatus = game.getBoard ().getStatus ();
         return new GameDto ( game.getId (), gameStatus ,game.getCurrentPlayer(), game.getWinner ());

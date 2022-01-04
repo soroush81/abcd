@@ -1,13 +1,14 @@
 package ir.soodeh.mancala.repositories;
 import ir.soodeh.mancala.domain.Game;
 import org.springframework.stereotype.Repository;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
 public class GameRepositoryImpl implements GameRepository {
 
-    private ConcurrentHashMap<Integer, Game> games =  new ConcurrentHashMap<> ();
+    private Map<String, Game> games =  new ConcurrentHashMap<> ();
 
     @Override
     public Game save(Game game) {
@@ -16,7 +17,7 @@ public class GameRepositoryImpl implements GameRepository {
     }
 
     @Override
-    public Optional<Game> findById(Integer id) {
+    public Optional<Game> findById(String id) {
        return Optional.ofNullable(games.get ( id ));
     }
 

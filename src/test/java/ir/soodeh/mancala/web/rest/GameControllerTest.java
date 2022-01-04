@@ -57,7 +57,7 @@ class GameControllerTest {
     void playGame() throws Exception {
 
         Game game = new Game();
-        when(this.gameService.play(1000, 3))
+        when(this.gameService.play("1000", 3))
                 .thenReturn(game);
 
        mvc.perform(put("/game/1000/pit/3")
@@ -67,7 +67,7 @@ class GameControllerTest {
                 .andExpect( MockMvcResultMatchers.jsonPath("$.currentPlayer").value( Player.PLAYER_1.toString () ))
                 .andReturn();
 
-        verify(gameService, times(1)).play(1000, 3);
+        verify(gameService, times(1)).play("1000", 3);
 
     }
 }

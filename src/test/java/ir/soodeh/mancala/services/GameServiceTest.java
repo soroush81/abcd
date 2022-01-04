@@ -1,9 +1,7 @@
 package ir.soodeh.mancala.services;
 
-import ir.soodeh.mancala.domain.Pit;
 import ir.soodeh.mancala.services.exceptions.GameNotFoundException;
 import ir.soodeh.mancala.services.exceptions.InvalidMoveException;
-import ir.soodeh.mancala.domain.Board;
 import ir.soodeh.mancala.domain.Game;
 import ir.soodeh.mancala.domain.Player;
 import ir.soodeh.mancala.repositories.GameRepository;
@@ -25,6 +23,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class GameServiceTest {
+    private final String GAME_ID = "6b09554d-4985-4957-a43f-d9ff327aa930";
 
     @Mock
     private GameRepository gameRepository;
@@ -61,15 +60,15 @@ class GameServiceTest {
     class Play {
         @BeforeEach
         void gameSetup() {
-            when(gameRepository.findById ( 1000 )).thenReturn (Optional.of(game));
+            when(gameRepository.findById ( GAME_ID )).thenReturn (Optional.of(game));
         }
 
         @Test
         @DisplayName("play one round of game")
         void play_basic() {
-            Game playedGame = gameService.play ( 1000,3 );
+            Game playedGame = gameService.play ( GAME_ID,3 );
             assertThat(game).isEqualTo(playedGame);
-            verify ( gameRepository, times(1)).findById(1000);
+            verify ( gameRepository, times(1)).findById(GAME_ID);
         }
 
         @Test
@@ -77,7 +76,7 @@ class GameServiceTest {
         void play_emptyPit() {
             game.getBoard ().getPit ( 3 ).setStoneCount ( 0 );
 
-            assertThatThrownBy(() -> gameService.play ( 1000,3 ))
+            assertThatThrownBy(() -> gameService.play ( GAME_ID,3 ))
                     .isInstanceOf( InvalidMoveException.class)
                     .hasMessage(String.format("invalid move: The Pit is empty: %d",3));
         }
@@ -89,7 +88,7 @@ class GameServiceTest {
             game.getBoard ().getPit ( 5 ).setStoneCount (0);
             game.getBoard ().getPit ( 7 ).setStoneCount ( 8 );
 
-            Game playedGame = gameService.play ( 1000,4 );
+            Game playedGame = gameService.play ( GAME_ID,4 );
             assertThat(game.getCurrentPlayer()).isEqualTo(Player.PLAYER_2);
             assertThat ( playedGame.getBoard ().getPit ( 7 ).getStoneCount () ).isEqualTo ( 15 );
             assertThat ( playedGame.getBoard ().getPit ( 5 ).getStoneCount () ).isEqualTo ( 0 );
@@ -100,7 +99,7 @@ class GameServiceTest {
         @DisplayName("if last pit is kalaha")
         void play_lastPitIsCala() {
             game.getBoard().getPit(1).setStoneCount(6);
-            gameService.play(1000,1);
+            gameService.play(GAME_ID,1);
             assertThat(game.getCurrentPlayer())
                     .isEqualTo(Player.PLAYER_1);
         }
@@ -108,19 +107,19 @@ class GameServiceTest {
         @Test
         @DisplayName("if the game id is invalid")
         void play_gameNotFound() {
-            when(gameRepository.findById(1000))
+            when(gameRepository.findById("6b09554d-4985-4957-a43f-d9ff327aa930"))
                     .thenReturn(Optional.ofNullable(null));
-            assertThatThrownBy( () -> gameService.play(1000, 2))
+            assertThatThrownBy( () -> gameService.play("6b09554d-4985-4957-a43f-d9ff327aa930", 2))
                     .isInstanceOf(GameNotFoundException.class);
         }
 
         @Test
         @DisplayName("When the pit id is not in range")
         void play_pitNotFound() {
-            assertThatThrownBy(() -> gameService.play(1000,-1))
+            assertThatThrownBy(() -> gameService.play(GAME_ID,-1))
                     .isInstanceOf( PitNotFoundException.class)
                     .hasMessage(String.format ( "Not Found: Could not find selected pit %d",-1));
-            assertThatThrownBy(() -> gameService.play(1000, 15))
+            assertThatThrownBy(() -> gameService.play(GAME_ID, 15))
                     .isInstanceOf(PitNotFoundException.class)
                     .hasMessage(String.format ( "Not Found: Could not find selected pit %d",15));
         }
@@ -128,7 +127,7 @@ class GameServiceTest {
         @Test
         @DisplayName("When the pit does not belong to current player")
         void play_invalidPitForCurrentPlayer() {
-            assertThatThrownBy(() -> gameService.play(1000,13))
+            assertThatThrownBy(() -> gameService.play(GAME_ID,13))
                     .isInstanceOf(InvalidMoveException.class)
                     .hasMessage(String.format("invalid move: The Pit does not belong to current player: %d",13));
         }
@@ -136,7 +135,7 @@ class GameServiceTest {
         @Test
         @DisplayName("if kalaha is selected")
         void play_kalahIsSelected() {
-            assertThatThrownBy(() -> gameService.play(1000,7))
+            assertThatThrownBy(() -> gameService.play(GAME_ID,7))
                     .isInstanceOf(InvalidMoveException.class)
                     .hasMessage("invalid move: The kalaha has been selected");
         }
@@ -159,7 +158,7 @@ class GameServiceTest {
                 game.getBoard ( ).getPit ( Player.PLAYER_2.getCalaIdx ( ) ).setStoneCount ( 40 );
                 game.setCurrentPlayer ( Player.PLAYER_2 );
 
-                game = gameService.play ( 1000, 13 );
+                game = gameService.play ( GAME_ID, 13 );
                 assertThat ( game.getWinner ( ) ).isEqualTo ( Player.PLAYER_2 );
             }
 
@@ -170,7 +169,7 @@ class GameServiceTest {
                 game.getBoard ( ).getPit ( Player.PLAYER_2.getCalaIdx ( ) ).setStoneCount ( 35 );
                 game.setCurrentPlayer ( Player.PLAYER_2 );
 
-                game = gameService.play ( 1000, 13 );
+                game = gameService.play ( GAME_ID, 13 );
                 assertThat(game.getWinner())
                         .isNull();
             }

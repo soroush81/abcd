@@ -35,7 +35,7 @@ public class GameService {
      * @param pitIdx
      * @return game object
      */
-    public Game play(final Integer gameId, final int pitIdx){
+    public Game play(final String gameId, final int pitIdx){
         Game game = this.gameRepository.findById ( gameId ).orElseThrow (()->new GameNotFoundException ( gameId ));
         validateSelectedPit(game, pitIdx);
         Pit lastPit = shiftStones(game, pitIdx);

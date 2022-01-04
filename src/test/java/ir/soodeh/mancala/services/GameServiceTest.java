@@ -119,6 +119,7 @@ class GameServiceTest {
             assertThatThrownBy(() -> gameService.play(GAME_ID,-1))
                     .isInstanceOf( PitNotFoundException.class)
                     .hasMessage(String.format ( "Not Found: Could not find selected pit %d",-1));
+
             assertThatThrownBy(() -> gameService.play(GAME_ID, 15))
                     .isInstanceOf(PitNotFoundException.class)
                     .hasMessage(String.format ( "Not Found: Could not find selected pit %d",15));

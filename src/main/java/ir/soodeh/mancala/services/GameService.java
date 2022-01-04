@@ -37,9 +37,11 @@ public class GameService {
      */
     public Game play(final String gameId, final int pitIdx){
         Game game = this.gameRepository.findById ( gameId ).orElseThrow (()->new GameNotFoundException ( gameId ));
+
         validateSelectedPit(game, pitIdx);
         Pit lastPit = shiftStones(game, pitIdx);
         getOppositeOnLastEmptyPit(game ,lastPit);
+
         decideGameStatus(game,lastPit);
         return game;
     }
@@ -58,12 +60,12 @@ public class GameService {
      * @param pitIdx
      */
     public Pit shiftStones(final Game game,int pitIdx) {
-        //shift stones in a loop
         Pit selectedPit = game.getBoard ().getPit(pitIdx);
         int selectedPitStoneCount = selectedPit.getStoneCount ();
         selectedPit.setStoneCount (0);
         Pit currentPit = null;
-        // loop to place the stone in the pits anticlockwise
+
+        // loop to shift the stone in the pits anticlockwise
         while(selectedPitStoneCount > 0){
             pitIdx++;
             if (pitIdx > LAST_IDX)
@@ -101,6 +103,7 @@ public class GameService {
      */
     private void getOppositeOnLastEmptyPit(final Game game, final Pit lastPit) {
         final Player currentPlayer = game.getCurrentPlayer ();
+
         if (lastPit.getStoneCount() == 1 && !lastPit.isCala () && lastPit.getOwner ().equals ( currentPlayer )){
             Pit oppositePit = game.getBoard().getPit ( LAST_IDX-lastPit.getId () );
             Pit currentPlayerKalah = game.getBoard ().getPit(currentPlayer.getCalaIdx ());

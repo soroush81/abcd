@@ -1,6 +1,7 @@
 package ir.soodeh.mancala.web.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ir.soodeh.mancala.domain.Board;
 import ir.soodeh.mancala.domain.Game;
 import ir.soodeh.mancala.domain.Player;
 import ir.soodeh.mancala.services.GameService;

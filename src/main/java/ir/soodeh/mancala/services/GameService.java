@@ -57,7 +57,7 @@ public class GameService {
      * @param game
      * @param pitIdx
      */
-    private Pit shiftStones(final Game game,int pitIdx) {
+    public Pit shiftStones(final Game game,int pitIdx) {
         //shift stones in a loop
         Pit selectedPit = game.getBoard ().getPit(pitIdx);
         int selectedPitStoneCount = selectedPit.getStoneCount ();

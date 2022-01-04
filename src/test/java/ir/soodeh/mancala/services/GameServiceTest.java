@@ -114,7 +114,7 @@ class GameServiceTest {
         }
 
         @Test
-        @DisplayName("When the pit id is not in range")
+        @DisplayName("if the pit id is not in range")
         void play_pitNotFound() {
             assertThatThrownBy(() -> gameService.play(GAME_ID,-1))
                     .isInstanceOf( PitNotFoundException.class)
@@ -126,7 +126,7 @@ class GameServiceTest {
         }
 
         @Test
-        @DisplayName("When the pit does not belong to current player")
+        @DisplayName("if the pit does not belong to current player")
         void play_invalidPitForCurrentPlayer() {
             assertThatThrownBy(() -> gameService.play(GAME_ID,13))
                     .isInstanceOf(InvalidMoveException.class)

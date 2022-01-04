@@ -51,7 +51,7 @@ public class GameService {
      * @param game that want to reset
      */
     public void resetGame(final Game game){
-        game.getBoard ( ).getPits ().stream ().filter(pit -> !pit.isCala()).forEach ( pit -> pit.setStoneCount ( 0 ) );
+        game.getBoard ( ).getPits ().stream ().filter(pit -> !pit.isCala()).forEach ( pit -> pit.setStoneCount ( 6 ) );
     }
 
     /**
@@ -59,7 +59,7 @@ public class GameService {
      * @param game
      * @param pitIdx
      */
-    public Pit shiftStones(final Game game,int pitIdx) {
+    private Pit shiftStones(final Game game,int pitIdx) {
         Pit selectedPit = game.getBoard ().getPit(pitIdx);
         int selectedPitStoneCount = selectedPit.getStoneCount ();
         selectedPit.setStoneCount (0);
@@ -104,7 +104,9 @@ public class GameService {
     private void getOppositeOnLastEmptyPit(final Game game, final Pit lastPit) {
         final Player currentPlayer = game.getCurrentPlayer ();
 
-        if (lastPit.getStoneCount() == 1 && !lastPit.isCala () && lastPit.getOwner ().equals ( currentPlayer )){
+        if (lastPit.getStoneCount() == 1 && !lastPit.isCala ()
+                && lastPit.getOwner ().equals ( currentPlayer )){
+
             Pit oppositePit = game.getBoard().getPit ( LAST_IDX-lastPit.getId () );
             Pit currentPlayerKalah = game.getBoard ().getPit(currentPlayer.getCalaIdx ());
 
@@ -127,7 +129,7 @@ public class GameService {
         Pit player2Cala = game.getBoard ().getPit ( Player.PLAYER_2.getCalaIdx () );
         player1Cala.setStoneCount (player1Cala.getStoneCount () + player1StoneCount);
         player2Cala.setStoneCount (player2Cala.getStoneCount () + player2StoneCount);
-        resetGame (game );
+        game.getBoard ( ).getPits ().stream ().filter(pit -> !pit.isCala()).forEach ( pit -> pit.setStoneCount ( 0 ) );
     }
 
     /**

@@ -57,17 +57,17 @@ class GameControllerTest {
     void playGame() throws Exception {
 
         Game game = new Game();
-        when(this.gameService.play("1000", 3))
+        when(this.gameService.play("6b09554d-4985-4957-a43f-d9ff327aa930", 3))
                 .thenReturn(game);
 
-       mvc.perform(put("/game/1000/pit/3")
+       mvc.perform(put("/game/6b09554d-4985-4957-a43f-d9ff327aa930/pit/3")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect( MockMvcResultMatchers.jsonPath("$.status.1").value(6))
                 .andExpect( MockMvcResultMatchers.jsonPath("$.currentPlayer").value( Player.PLAYER_1.toString () ))
                 .andReturn();
 
-        verify(gameService, times(1)).play("1000", 3);
+        verify(gameService, times(1)).play("6b09554d-4985-4957-a43f-d9ff327aa930", 3);
 
     }
 }

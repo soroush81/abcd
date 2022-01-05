@@ -5,9 +5,9 @@ import org.zalando.problem.Status;
 
 import java.net.URI;
 
-public class PitNotFoundException extends AbstractThrowableProblem {
+public class PitNotFoundProblem extends AbstractThrowableProblem {
 
-      public PitNotFoundException(int pitId) {
+      public PitNotFoundProblem(int pitId) {
         super ( null,"Not Found", Status.NOT_FOUND,String.format ("Could not find selected pit %d", pitId  ) );
     }
 }

@@ -1,11 +1,11 @@
 package ir.soodeh.mancala.services;
 
-import ir.soodeh.mancala.services.exceptions.GameNotFoundException;
-import ir.soodeh.mancala.services.exceptions.InvalidMoveException;
+import ir.soodeh.mancala.services.exceptions.GameNotFoundProblem;
+import ir.soodeh.mancala.services.exceptions.InvalidMoveProblem;
 import ir.soodeh.mancala.domain.Game;
 import ir.soodeh.mancala.domain.Player;
 import ir.soodeh.mancala.repositories.GameRepository;
-import ir.soodeh.mancala.services.exceptions.PitNotFoundException;
+import ir.soodeh.mancala.services.exceptions.PitNotFoundProblem;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,14 +22,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class GameServiceTest {
+class GameServiceImplTest {
     private final String GAME_ID = "6b09554d-4985-4957-a43f-d9ff327aa930";
 
     @Mock
     private GameRepository gameRepository;
 
     @InjectMocks
-    private GameService gameService;
+    private GameServiceImpl gameService;
 
     private Game game;
 
@@ -50,9 +50,10 @@ class GameServiceTest {
     @Test
     @DisplayName("check reset game")
     void resetGame() {
-        gameService.resetGame ( game );
-        assertThat (game.getBoard ( ).getStoneCount ( Player.PLAYER_1, false )).isEqualTo ( 0 );
-        assertThat (game.getBoard ( ).getStoneCount ( Player.PLAYER_2, false )).isEqualTo ( 0 );
+        when(gameRepository.findById ( GAME_ID )).thenReturn (Optional.of(game));
+        gameService.resetGame ( GAME_ID );
+        assertThat (game.getBoard ( ).getStoneCount ( Player.PLAYER_1, false )).isEqualTo ( 36 );
+        assertThat (game.getBoard ( ).getStoneCount ( Player.PLAYER_2, false )).isEqualTo ( 36 );
     }
 
     @Nested
@@ -77,7 +78,7 @@ class GameServiceTest {
             game.getBoard ().getPit ( 3 ).setStoneCount ( 0 );
 
             assertThatThrownBy(() -> gameService.play ( GAME_ID,3 ))
-                    .isInstanceOf( InvalidMoveException.class)
+                    .isInstanceOf( InvalidMoveProblem.class)
                     .hasMessage(String.format("invalid move: The Pit is empty: %d",3));
         }
 
@@ -110,18 +111,18 @@ class GameServiceTest {
             when(gameRepository.findById("6b09554d-4985-4957-a43f-d9ff327aa930"))
                     .thenReturn(Optional.ofNullable(null));
             assertThatThrownBy( () -> gameService.play("6b09554d-4985-4957-a43f-d9ff327aa930", 2))
-                    .isInstanceOf(GameNotFoundException.class);
+                    .isInstanceOf( GameNotFoundProblem.class);
         }
 
         @Test
         @DisplayName("if the pit id is not in range")
         void play_pitNotFound() {
             assertThatThrownBy(() -> gameService.play(GAME_ID,-1))
-                    .isInstanceOf( PitNotFoundException.class)
+                    .isInstanceOf( PitNotFoundProblem.class)
                     .hasMessage(String.format ( "Not Found: Could not find selected pit %d",-1));
 
             assertThatThrownBy(() -> gameService.play(GAME_ID, 15))
-                    .isInstanceOf(PitNotFoundException.class)
+                    .isInstanceOf( PitNotFoundProblem.class)
                     .hasMessage(String.format ( "Not Found: Could not find selected pit %d",15));
         }
 
@@ -129,7 +130,7 @@ class GameServiceTest {
         @DisplayName("if the pit does not belong to current player")
         void play_invalidPitForCurrentPlayer() {
             assertThatThrownBy(() -> gameService.play(GAME_ID,13))
-                    .isInstanceOf(InvalidMoveException.class)
+                    .isInstanceOf( InvalidMoveProblem.class)
                     .hasMessage(String.format("invalid move: The Pit does not belong to current player: %d",13));
         }
 
@@ -137,7 +138,7 @@ class GameServiceTest {
         @DisplayName("if kalaha is selected")
         void play_kalahIsSelected() {
             assertThatThrownBy(() -> gameService.play(GAME_ID,7))
-                    .isInstanceOf(InvalidMoveException.class)
+                    .isInstanceOf( InvalidMoveProblem.class)
                     .hasMessage("invalid move: The kalaha has been selected");
         }
 

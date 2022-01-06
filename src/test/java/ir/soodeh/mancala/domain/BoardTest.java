@@ -25,13 +25,13 @@ class BoardTest {
     void getStatus() {
         JSONObject status = this.board.getStatus();
 
-        assertThat(status.get("1"))
+        assertThat(status.get(1))
                 .isEqualTo(6);
 
-        assertThat(status.get("12"))
+        assertThat(status.get(12))
                 .isEqualTo(6);
 
-        assertThat(status.get("7"))
+        assertThat(status.get(7))
                 .isEqualTo(0);
     }
 }

@@ -51,8 +51,8 @@ class GameServiceTest {
     @DisplayName("check reset game")
     void resetGame() {
         gameService.resetGame ( game );
-        assertThat (game.getBoard ( ).getStoneCount ( Player.PLAYER_1, false )).isEqualTo ( 0 );
-        assertThat (game.getBoard ( ).getStoneCount ( Player.PLAYER_2, false )).isEqualTo ( 0 );
+        assertThat (game.getBoard ( ).getStoneCount ( Player.PLAYER_1, false )).isEqualTo ( 36 );
+        assertThat (game.getBoard ( ).getStoneCount ( Player.PLAYER_2, false )).isEqualTo ( 36 );
     }
 
     @Nested

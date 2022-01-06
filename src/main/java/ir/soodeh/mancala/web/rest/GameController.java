@@ -1,19 +1,17 @@
 package ir.soodeh.mancala.web.rest;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import ir.soodeh.mancala.domain.Game;
 import ir.soodeh.mancala.services.GameServiceImpl;
 import ir.soodeh.mancala.services.dtos.GameDto;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
 
 @RestController
 @RequestMapping("/game")
-//@CrossOrigin(origins = "*")
+@Api(value="Mancala Game")
 public class GameController {
 
     private GameServiceImpl gameService;
@@ -24,6 +22,7 @@ public class GameController {
     }
 
     @PostMapping()
+    @ApiOperation(value = "Create a new game", response = Iterable.class)
     public GameDto createGame(){
         Game game = gameService.createGame (  );
 //        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").
@@ -35,6 +34,7 @@ public class GameController {
     }
 
     @PutMapping("{gameId}/pit/{pitId}")
+    @ApiOperation(value = "Play one round of a game by selecting a pit by player", response = Iterable.class)
     public GameDto playGame(@PathVariable String gameId, @PathVariable int pitId){
         Game game = gameService.play ( gameId, pitId );
         JSONObject gameStatus = game.getBoard ().getStatus ();

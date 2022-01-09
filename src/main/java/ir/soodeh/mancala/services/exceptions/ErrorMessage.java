@@ -6,13 +6,13 @@ public class ErrorMessage {
     private int statusCode;
     private Date timestamp;
     private String message;
-    private String description;
+    private String detail;
 
-    public ErrorMessage(int statusCode, Date timestamp, String message, String description) {
+    public ErrorMessage(int statusCode, Date timestamp, String message, String detail) {
         this.statusCode = statusCode;
         this.timestamp = timestamp;
         this.message = message;
-        this.description = description;
+        this.detail = detail;
     }
 
     public int getStatusCode() {
@@ -27,7 +27,7 @@ public class ErrorMessage {
         return message;
     }
 
-    public String getDescription() {
-        return description;
+    public String getDetail() {
+        return detail;
     }
 }

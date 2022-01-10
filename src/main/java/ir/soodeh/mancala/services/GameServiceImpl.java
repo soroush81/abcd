@@ -1,53 +1,51 @@
 package ir.soodeh.mancala.services;
 
-import ir.soodeh.mancala.domain.Game;
-import ir.soodeh.mancala.domain.Pit;
-import ir.soodeh.mancala.domain.Player;
-import ir.soodeh.mancala.services.exceptions.GameNotFoundProblem;
+import ir.soodeh.mancala.model.Game;
+import ir.soodeh.mancala.model.Pit;
+import ir.soodeh.mancala.model.Player;
+import ir.soodeh.mancala.services.exceptions.GameNotFoundException;
 import ir.soodeh.mancala.repositories.GameRepository;
-import ir.soodeh.mancala.services.exceptions.InvalidMoveProblem;
-import ir.soodeh.mancala.services.exceptions.PitNotFoundProblem;
+import ir.soodeh.mancala.services.validator.GameValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
 import static ir.soodeh.mancala.constants.KalahaConstants.*;
 
 @Service
 public class GameServiceImpl implements GameService {
 
     private GameRepository gameRepository;
+    private GameValidator gameValidator;
 
     @Autowired
-    public GameServiceImpl(GameRepository gameRepository) {
+    public GameServiceImpl(GameRepository gameRepository, GameValidator gameValidator) {
         this.gameRepository = gameRepository;
+        this.gameValidator = gameValidator;
     }
 
-    /**
-     * this method for creating a new game
-     * @return created game object
-     */
-    public Game createGame(){
-        return gameRepository.save ( new Game() );
+    public Optional<Game> createGame(){
+        return Optional.of(gameRepository.save ( new Game() ));
     }
 
-    /**
-     * this method use for playing game
-     * @param gameId
-     * @param pitIdx
-     * @return game object
-     */
-    public Game play(final String gameId, final int pitIdx){
-        Game game = this.gameRepository.findById ( gameId ).orElseThrow (()->new GameNotFoundProblem ( gameId ));
+    public Optional<Game> play(final String gameId, final int pitIdx){
+        Optional<Game> game = this.gameRepository.findById ( gameId );
+        if (!game.isPresent())
+            throw new GameNotFoundException (gameId);
+        return game.map ( g -> {
+                    this.gameValidator.validateGame ( g, pitIdx );
+                    Pit lastPit = shiftStones ( g, pitIdx );
+                    getOppositeOnLastEmptyPit(g ,lastPit);
+                    decideGameStatus(g,lastPit);
+                    return g;
+             }
+         );
 
-        validateSelectedPit(game, pitIdx);
-        Pit lastPit = shiftStones(game, pitIdx);
-        getOppositeOnLastEmptyPit(game ,lastPit);
-
-        decideGameStatus(game,lastPit);
-        return game;
     }
 
     public void resetGame(final String gameId){
-        Game game = this.gameRepository.findById ( gameId ).orElseThrow (()->new GameNotFoundProblem ( gameId ));
+        Game game = this.gameRepository.findById ( gameId ).orElseThrow (()->new GameNotFoundException ( gameId ));
         game.getBoard ( ).getPits ().stream ().filter(pit -> !pit.isCala()).forEach ( pit -> pit.setStoneCount ( 6 ) );
     }
 
@@ -158,27 +156,5 @@ public class GameServiceImpl implements GameService {
         else
             game.setWinner ( Player.PLAYER_2 );
         game.setCurrentPlayer ( null );
-    }
-
-    /**
-     * this methods is for validation rules for move
-     * @param game
-     * @param pitIdx
-     */
-    private void validateSelectedPit(final Game game, final int pitIdx) {
-        if (pitIdx <  FIRST_IDX || pitIdx > LAST_IDX)
-            throw new PitNotFoundProblem ( pitIdx );
-
-        if (pitIdx == LAST_IDX/2 || pitIdx == LAST_IDX)
-            throw new InvalidMoveProblem ( "The kalaha has been selected" );
-
-        if ((game.getCurrentPlayer () == Player.PLAYER_1 && pitIdx > LAST_IDX/2) ||
-                (game.getCurrentPlayer () == Player.PLAYER_2 && pitIdx <= LAST_IDX/2))
-            throw new InvalidMoveProblem ("The Pit does not belong to current player", pitIdx);
-
-        Pit selectedPit = game.getBoard ().getPit ( pitIdx );
-        if (selectedPit.getStoneCount() == 0) {
-            throw new InvalidMoveProblem ("The Pit is empty",pitIdx);
-        }
     }
 }

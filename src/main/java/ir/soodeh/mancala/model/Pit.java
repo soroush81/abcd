@@ -1,4 +1,4 @@
-package ir.soodeh.mancala.domain;
+package ir.soodeh.mancala.model;
 import static ir.soodeh.mancala.constants.KalahaConstants.*;
 
 public class Pit {
@@ -25,6 +25,10 @@ public class Pit {
         this.stoneCount = stoneCount;
     }
 
+    /**
+     * this method is for getting the owner of the pit based on pit id
+     * @return Player based on pit index
+     */
     public Player getOwner(){
         return (this.id <= LAST_IDX/2) ? Player.PLAYER_1 : Player.PLAYER_2;
     }

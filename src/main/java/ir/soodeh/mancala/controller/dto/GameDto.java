@@ -1,6 +1,6 @@
-package ir.soodeh.mancala.services.dtos;
+package ir.soodeh.mancala.controller.dto;
 
-import ir.soodeh.mancala.domain.Player;
+import ir.soodeh.mancala.model.Player;
 import org.json.simple.JSONObject;
 
 public class GameDto {
@@ -21,7 +21,11 @@ public class GameDto {
     }
 
     public JSONObject getStatus() {
-        return status;
+        return this.status;
+    }
+
+    public void setStatus(JSONObject status) {
+        this.status = status;
     }
 
     public Player getWinner() {

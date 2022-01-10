@@ -1,4 +1,4 @@
-package ir.soodeh.mancala.domain;
+package ir.soodeh.mancala.model;
 
 import static ir.soodeh.mancala.constants.KalahaConstants.*;
 import org.junit.jupiter.api.Test;

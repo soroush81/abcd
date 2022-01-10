@@ -1,7 +1,6 @@
 package ir.soodeh.mancala.repositories;
 
-import ir.soodeh.mancala.domain.Board;
-import ir.soodeh.mancala.domain.Game;
+import ir.soodeh.mancala.model.Game;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

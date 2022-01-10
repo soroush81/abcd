@@ -1,4 +1,4 @@
-package ir.soodeh.mancala.domain;
+package ir.soodeh.mancala.model;
 
 import org.json.simple.JSONObject;
 import java.util.List;
@@ -28,6 +28,10 @@ public class Board {
         return pits.stream().filter ( pit -> pit.getOwner () == player && pit.isCala()==isCala).mapToInt ( Pit::getStoneCount ).sum ();
     }
 
+    /**
+     * create a json object that return board status that it key is pitId and its value is pit stone count
+     * @return jsonObject of status of the board
+     */
     public JSONObject getStatus(){
         JSONObject status = new JSONObject (  );
         pits.stream ().forEach ( pit -> status.put(pit.getId (), pit.getStoneCount ()) );

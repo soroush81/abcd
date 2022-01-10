@@ -1,7 +1,6 @@
-package ir.soodeh.mancala.domain;
+package ir.soodeh.mancala.model;
 
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Game {
     private String id;

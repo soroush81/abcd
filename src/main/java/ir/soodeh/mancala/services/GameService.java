@@ -1,6 +1,8 @@
 package ir.soodeh.mancala.services;
 
-import ir.soodeh.mancala.domain.Game;
+import ir.soodeh.mancala.model.Game;
+
+import java.util.Optional;
 
 public interface GameService {
 
@@ -8,7 +10,7 @@ public interface GameService {
      * create a new game
      * @return the new game
      */
-    Game createGame();
+    Optional<Game> createGame();
 
     /**
      * play one round of game
@@ -16,7 +18,7 @@ public interface GameService {
      * @param pitIdx the id of the pit that has been selected
      * @return the game object of the given id after play the round
      */
-    Game play(final String gameId, final int pitIdx);
+    Optional<Game> play(final String gameId, final int pitIdx);
 
     /**
      * reset that game

@@ -1,9 +1,7 @@
 package ir.soodeh.mancala.repositories;
-import ir.soodeh.mancala.domain.Game;
+import ir.soodeh.mancala.model.Game;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,7 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Repository
 public class GameRepositoryImpl implements GameRepository {
 
-    //private Map<String, Game> games =  Collections.synchronizedMap(new HashMap<> ());
     private Map<String, Game> games =  new ConcurrentHashMap<> (  );
     @Override
     public Game save(Game game) {

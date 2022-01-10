@@ -13,7 +13,9 @@ public class Board {
 
     public Board() {
         //initialize the board
-        pits = IntStream.range(FIRST_IDX, LAST_IDX + 1).boxed().map(i-> new Pit(i, isCala ( i ) ? 0 : DEFAULT_PIT_STONE, isCala ( i ) )).collect( Collectors.toList());
+        pits = IntStream.range(FIRST_IDX, LAST_IDX + 1).boxed()
+                .map(i-> new Pit(i, isCala ( i ) ? 0 : DEFAULT_PIT_STONE, isCala ( i ) ))
+                .collect( Collectors.toList());
     }
 
     public Pit getPit(int idx){

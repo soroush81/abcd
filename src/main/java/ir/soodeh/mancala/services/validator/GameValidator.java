@@ -17,10 +17,6 @@ import static ir.soodeh.mancala.constants.KalahaConstants.LAST_IDX;
 @Component
 public class GameValidator {
 
-    @Autowired
-    public GameValidator() {
-    }
-
     public Optional<Game> validateGame(final Game game, final int pitIdx) {
         return Optional.of ( game )
                 .map ( g -> {

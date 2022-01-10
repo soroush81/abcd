@@ -76,25 +76,28 @@ class GameServiceImplTest {
             Game playedGame = gameService.play ( GAME_ID,3 ).get();
             assertThat(game).isEqualTo(playedGame);
             verify ( gameRepository, times(1)).findById(GAME_ID);
+            assertThat(game.getBoard().getPit(3).getStoneCount()).isEqualTo(0);
         }
 
         @Test
         @DisplayName ( "if last pit sit on the empty pit of current player")
-        void validateGame_lastPitSitOnEmpty(){
+        void play_lastPitSitOnEmpty(){
             game.getBoard ().getPit ( 4 ).setStoneCount (1);
             game.getBoard ().getPit ( 5 ).setStoneCount (0);
             game.getBoard ().getPit ( 7 ).setStoneCount ( 8 );
+            game.getBoard ().getPit ( 9 ).setStoneCount ( 1 );
             when(gameRepository.findById ( GAME_ID )).thenReturn (Optional.of(game));
             Game playedGame = gameService.play ( GAME_ID,4 ).get();
             assertThat(game.getCurrentPlayer()).isEqualTo( Player.PLAYER_2);
-            assertThat ( playedGame.getBoard ().getPit ( 7 ).getStoneCount () ).isEqualTo ( 15 );
+            assertThat ( playedGame.getBoard ().getPit ( 7 ).getStoneCount () ).isEqualTo ( 10 );
             assertThat ( playedGame.getBoard ().getPit ( 5 ).getStoneCount () ).isEqualTo ( 0 );
             assertThat ( playedGame.getBoard ().getPit ( 4 ).getStoneCount () ).isEqualTo ( 0 );
+            assertThat ( playedGame.getBoard ().getPit ( 9 ).getStoneCount () ).isEqualTo ( 0 );
         }
 
         @Test
         @DisplayName("if last pit is kalaha")
-        void validateGame_lastPitIsCala() {
+        void play_lastPitIsCala() {
             game.getBoard().getPit(1).setStoneCount(6);
             when(gameRepository.findById ( GAME_ID )).thenReturn (Optional.of(game));
             gameService.play (GAME_ID,1);

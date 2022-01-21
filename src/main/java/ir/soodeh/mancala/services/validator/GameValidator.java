@@ -4,10 +4,7 @@ import ir.soodeh.mancala.model.Game;
 import ir.soodeh.mancala.model.Pit;
 import ir.soodeh.mancala.model.Player;
 import ir.soodeh.mancala.services.exceptions.InvalidMoveException;
-import ir.soodeh.mancala.services.exceptions.InvalidMoveProblem;
 import ir.soodeh.mancala.services.exceptions.PitNotFoundException;
-import ir.soodeh.mancala.services.exceptions.PitNotFoundProblem;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.Optional;
 

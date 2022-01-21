@@ -9,8 +9,7 @@ import ir.soodeh.mancala.services.GameServiceImpl;
 import ir.soodeh.mancala.controller.dto.GameDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
-import org.mockito.Spy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -66,7 +65,6 @@ class GameControllerTest {
                 .isEqualTo(game.getId());
 
         verify(gameService, times(1)).createGame();
-
     }
 
     @Test

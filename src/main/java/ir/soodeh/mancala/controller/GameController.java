@@ -14,7 +14,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/game")
-@Api(value="Mancala Game")
+@Api(value="Kalaha Game")
 public class GameController {
 
     private GameServiceImpl gameService;
